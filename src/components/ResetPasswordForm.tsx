@@ -5,6 +5,9 @@ import { useState } from 'react';
 import { auth } from '@/lib/firebase';
 import { sendPasswordResetEmail } from 'firebase/auth';
 import Link from 'next/link';
+import { FaSpinner } from 'react-icons/fa';
+
+import { Button } from './Button';
 
 export default function ResetPasswordForm() {
   const [email, setEmail] = useState('');
@@ -12,8 +15,7 @@ export default function ResetPasswordForm() {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = async () => {
     setMessage(null);
     setError(null);
 
@@ -38,7 +40,7 @@ export default function ResetPasswordForm() {
     <Container>
       <Wrapper>
         <Title>Recuperar contraseña</Title>
-        <Form onSubmit={handleSubmit}>
+        <Form onSubmit={(e) => e.preventDefault()}>
           <Input
             type="email"
             value={email}
@@ -49,9 +51,13 @@ export default function ResetPasswordForm() {
           {error && <Message error>{error}</Message>}
           {message && <Message>{message}</Message>}
 
-          <Button type="submit" disabled={loading}>
-            {loading ? 'Enviando...' : 'Enviar correo de recuperación'}
-          </Button>
+          <Button
+            onClick={handleSubmit}
+            disabled={loading}
+            label={loading ? 'Enviando...' : 'Enviar'}
+            icon={loading ? <FaSpinner className="animate-spin" /> : null}
+            variant="primary"
+          />
         </Form>
 
         <StyledLink href="/login" passHref>
@@ -105,21 +111,6 @@ const Message = styled.p<{ error?: boolean }>`
   font-size: 0.875rem;
   text-align: center;
   color: ${({ error }) => (error ? '#e53e3e' : '#38a169')};
-`;
-
-const Button = styled.button`
-  padding: 0.75rem;
-  background-color: #5a67d8;
-  color: white;
-  font-size: 1rem;
-  font-weight: 500;
-  border: none;
-  border-radius: 0.5rem;
-  cursor: pointer;
-  transition: background-color 0.2s;
-  &:hover {
-    background-color: #434190;
-  }
 `;
 
 const StyledLink = styled(Link)`

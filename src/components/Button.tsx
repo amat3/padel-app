@@ -4,10 +4,11 @@ import styled from '@emotion/styled';
 
 interface ButtonProps {
   label?: string;
-  onClick: () => void;
+  onClick?: () => void;
   disabled?: boolean;
   variant?: 'primary' | 'secondary';
   icon?: React.ReactNode;
+  type?: 'button' | 'submit' | 'reset';
 }
 
 export function Button({
@@ -16,12 +17,14 @@ export function Button({
   disabled = false,
   variant = 'primary',
   icon,
+  type = 'button',
 }: ButtonProps) {
   return (
     <StyledButton
       onClick={onClick}
       disabled={disabled}
       variant={variant}
+      type={type}
     >
       {icon && <IconWrapper>{icon}</IconWrapper>}
       {label}
@@ -66,4 +69,3 @@ const IconWrapper = styled.span`
   display: flex;
   align-items: center;
 `;
-

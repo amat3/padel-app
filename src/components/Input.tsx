@@ -9,7 +9,9 @@ type InputProps = {
   autoComplete?: string;
   error?: string;
   disabled?: boolean;
-  onBlur?: (e: React.FocusEvent<HTMLInputElement>) => void; // Añadido onBlur
+  onBlur?: (e: React.FocusEvent<HTMLInputElement>) => void;
+  rightIcon?: React.ReactNode;
+  onRightIconClick?: () => void;
 };
 
 export const Input: React.FC<InputProps> = ({
@@ -22,21 +24,30 @@ export const Input: React.FC<InputProps> = ({
   error,
   disabled,
   onBlur,
+  rightIcon,
+  onRightIconClick,
 }) => {
   return (
     <InputWrapper>
       <Label htmlFor={id}>{label}</Label>
-      <StyledInput
-        id={id}
-        type={type}
-        value={value}
-        onChange={onChange}
-        autoComplete={autoComplete}
-        aria-invalid={!!error}
-        disabled={disabled}
-        hasError={!!error}
-        onBlur={onBlur} // Usamos el onBlur aquí
-      />
+      <InputContainer>
+        <StyledInput
+          id={id}
+          type={type}
+          value={value}
+          onChange={onChange}
+          autoComplete={autoComplete}
+          aria-invalid={!!error}
+          disabled={disabled}
+          hasError={!!error}
+          onBlur={onBlur}
+        />
+        {rightIcon && (
+          <IconButton type="button" onClick={onRightIconClick}>
+            {rightIcon}
+          </IconButton>
+        )}
+      </InputContainer>
       {error && <ErrorText>{error}</ErrorText>}
     </InputWrapper>
   );
@@ -56,6 +67,11 @@ const Label = styled.label`
   color: #2d3748;
 `;
 
+const InputContainer = styled.div`
+  position: relative;
+  width: 100%;
+`;
+
 const StyledInput = styled.input<{ hasError?: boolean }>`
   width: 100%;
   padding: 0.5rem 0.75rem;
@@ -71,6 +87,22 @@ const StyledInput = styled.input<{ hasError?: boolean }>`
     border-color: ${({ hasError }) => (hasError ? '#e53e3e' : '#5a67d8')};
     box-shadow: 0 0 0 2px
       ${({ hasError }) => (hasError ? 'rgba(229, 62, 62, 0.3)' : 'rgba(90, 103, 216, 0.3)')};
+  }
+`;
+
+const IconButton = styled.button`
+  position: absolute;
+  top: 50%;
+  right: 0.75rem;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #4a5568;
+  font-size: 1.2rem;
+
+  &:hover {
+    color: #2d3748;
   }
 `;
 
